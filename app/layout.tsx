@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 import Navbar from "@/components/Navbar";
 import BackToTop from "@/components/BackToTop";
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next"
 
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -42,7 +44,8 @@ export default function RootLayout({
           {children}
           <BackToTop />
         </ThemeProvider>
-
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
