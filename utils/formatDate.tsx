@@ -5,3 +5,6 @@ export const formatDate = (date: any) => {
         day: "numeric",
     });
 };
+
+
+export default formatDate;
