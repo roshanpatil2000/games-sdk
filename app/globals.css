@@ -120,7 +120,35 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* =========================
+   Ad Slot – Layout Safe
+   Prevents CPM scripts from breaking the grid
+   ========================= */
+
+.ad-slot {
+  width: 100%;
+  height: 180px !important;
+  /* 🔒 Fixed height */
+  max-height: 180px !important;
+  overflow: hidden;
+  /* 🔒 Critical */
+  border-radius: 12px;
+  background: oklch(0.21 0.034 264.665);
+  /* dark card tone */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Prevent injected iframes from escaping */
+.ad-slot iframe {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  border: none !important;
 }

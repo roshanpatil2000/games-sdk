@@ -138,7 +138,6 @@ export default function GameList() {
                                 <p className="text-center text-sm">{game.category}</p>
                             </div>
                         </div>
-                        
                     </Fragment>
                 ))}
             </div>

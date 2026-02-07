@@ -20,6 +20,8 @@ const StickyPagination = dynamic(
     }
 )
 
+
+
 export default function GameList() {
     const router = useRouter()
     const [loading, setLoading] = useState(true);
@@ -27,21 +29,7 @@ export default function GameList() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
 
-    function getRandomIndices(total: number, count = 6): number[] {
-        if (total <= 0) return [];
-
-        const max = Math.min(count, total);
-        const indices = new Set<number>();
-
-        while (indices.size < max) {
-            indices.add(Math.floor(Math.random() * total));
-        }
-
-        return Array.from(indices);
-    }
-
-    const totalGames = games.length;
-    const adIndices = getRandomIndices(totalGames, 6);
+    const adIndex = 12; // insert ad after 4th item (safe position)
 
     // const fetchGames = async (page: number) => {
     //     const res = await fetch(
@@ -97,30 +85,22 @@ export default function GameList() {
 
                 {games?.map((game: any, index: number) => (
                     <Fragment key={game.id ?? index}>
-                        {adIndices.includes(index) && games.length > index && (() => {
-                            const containerId = `container-38fffe0d1714cf5ac3cc0455e8dd63de`;
-                            // const containerId = `container-38fffe0d1714cf5ac3cc0455e8dd63de`;
-
-                            return (
-                                <div
-                                    key={`ad-slot-${index}`}
-                                    className=""
-                                >
-                                    <div className="ad-slot">
-                                        <Script
-                                            async
-                                            data-cfasync="false"
-                                            src="https://pl28670306.effectivegatecpm.com/38fffe0d1714cf5ac3cc0455e8dd63de/invoke.js"
-                                            strategy="afterInteractive"
-                                        />
-                                        <div
-                                            id={containerId}
-                                            className="w-full h-full"
-                                        />
-                                    </div>
+                        {index === adIndex && games.length > adIndex && (
+                            <div
+                                key="ad-slot"
+                                className=""
+                            >
+                                <div className="ad-slot">
+                                    <Script
+                                        async
+                                        data-cfasync="false"
+                                        src="https://pl28670306.effectivegatecpm.com/38fffe0d1714cf5ac3cc0455e8dd63de/invoke.js"
+                                        strategy="afterInteractive"
+                                    />
+                                    <div id="container-38fffe0d1714cf5ac3cc0455e8dd63de" />
                                 </div>
-                            );
-                        })()}
+                            </div>
+                        )}
 
                         <div
                             key={game.id ?? index}
@@ -138,7 +118,6 @@ export default function GameList() {
                                 <p className="text-center text-sm">{game.category}</p>
                             </div>
                         </div>
-                        
                     </Fragment>
                 ))}
             </div>
