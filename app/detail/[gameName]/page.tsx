@@ -1,146 +1,88 @@
-"use client";
-type Props = {
-    params: {
-        gameName: string;
-    };
-};
+'use client'
 
-import { formatDate } from '@/app/utils/dateFormater';
+import formatDate from '@/utils/formatDate';
+import formatNumber from '@/utils/formatNumber';
 import axios from 'axios';
-import { useParams } from 'next/navigation'
-import { useState, useEffect } from 'react';
-
-export default function PlayGame() {
-    const [data, setData] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const { gameName } = useParams<{ gameName: string }>()
-    useEffect(() => {
-        fetchGameData();
-    }, []);
-    const GAMEPIX_SID = "0E766";
-
-    const gameUrl = `https://play.gamepix.com/${gameName}/embed?sid=${GAMEPIX_SID}`;
-    const apiUrl = `https://api.gamepix.com/v3/games/ns/${gameName}?sid=${GAMEPIX_SID}`;
+import { details } from 'framer-motion/client';
+import Image from 'next/image';
+import { useParams, useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react';
 
 
-    const fetchGameData = async () => {
-        try {
-            const response = await axios.get(apiUrl);
-            // console.log("response--", response)
-            setData(response?.data || null);
-            setLoading(false);
-        } catch (err) {
-            console.error(err);
-            setLoading(false);
-        }
+export default function gameGameDetails() {
+    const { gameName } = useParams<{ gameName: string }>();
+    const searchParams = useSearchParams();
+    
+    const [datails, setDetails] = useState<any>(null);
+    const [tags, setTags] = useState<{ name: string, tagNamespace: string, tagNSLocale: string, title: string }[]>([]);
+
+    const fetchGameDetail = async (gameName: string) => {
+        const res = await axios.get(
+            `https://api.gamepix.com/v3/games/ns/${gameName}`
+        );
+        const data = res.data;
+        setDetails(data);
+        setTags(data.tags);
+        // setDetail(data);
     };
 
+    // console.log(gameName)
+    useEffect(() => {
+        fetchGameDetail(gameName)
+    }, [])
 
-    // const gameDetail = await axios.get(apiUrl);
-    // console.log("gameDetail.data:", gameDetail.data);
+    const votes = formatNumber(datails?.desktopUpVote + datails?.mobileUpVote)
+    const totalVotes = formatNumber(datails?.desktopUpVote + datails?.mobileUpVote)
 
-    // console.log("gameUrl:", gameUrl);
-    // console.log("apiUrl:", apiUrl);
+    const rawScore =
+        ((datails?.scoreRanking + datails?.topDesktopScore + datails?.topMobileScore) / 3) * 10;
 
-    // console.log("data--", data)
-    console.log("data.description--", data?.description)
-
+    const score = Math.round(rawScore * 10) / 10;
 
 
+    const ReleaseDate = formatDate(datails?.pubDate)
+    const UpdateDate = formatDate(datails?.updatedAt)
 
-    if (!data) return <p>...loading</p>
+
+
     return (
-        <div className="">
-            {/* title */}
-            <div>
-                this is game detail page for {gameName}
+        datails && (
+            <div className='p-2 md:p-4 border'>
+                <section className='flex flex-col '>
+                    <h1 className="text-2xl font-bold">{datails?.title}</h1>
+                    <h1 className="text-2xl font-bold">{totalVotes}</h1>
+                    <h1 className="text-2xl font-bold">{score}</h1>
+                    <h1 className="text-2xl font-bold">{ReleaseDate}</h1>
+                    <h1 className="text-2xl font-bold">{UpdateDate}</h1>
+
+                </section>
+
+
+                {tags.length > 0 && (
+                    <div className='mt-4 flex gap-5'>
+                        <h2 className='text-lg font-semibold mb-2'>Tags:</h2>
+                        <div className='flex flex-wrap gap-2'>
+                            {tags.map((tag) => (
+                                <span
+                                    key={tag.tagNamespace}
+                                    className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded"
+                                >
+                                    {tag.title}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+
+                {/* <div className='relative h-dvh max-w-10/12' dangerouslySetInnerHTML={{ __html: datails?.embedCode }} /> */}
+                <div className='w-full lg:w-1/2'>
+                    {/* <Image src={det} */}
+
+                </div>
+
             </div>
-
-            {/* votes */}
-            <p> Likes:- 👍{(data.desktopUpVote + data.mobileUpVote)}</p>
-            <p> dis-likes:- 👎{(data.desktopDownVote + data.mobileDownVote)}</p>
-
-            {/* tags */}
-            <div>
-                {data.tags.map((tag: any) => (
-                    <span key={tag?.tagNamespace} className="inline-block bg-muted text-primary px-2 py-1 rounded-xl mr-2 mb-2">
-                        {tag?.name}
-                    </span>
-
-                ))}
-            </div>
-
-            {/* rating */}
-            <div>
-                rating: {(((data.todivDesktopScore + data.topMobileScore) / 2) * 10).toFixed(1)}
-            </div>
-
-            {/* engine */}
-            <div>
-                engine: {data?.gameEngine}
-            </div>
-
-            {/* Platform */}
-            <div>
-                platform: Browser ({data?.desktopFriendly === true ? "Desktop" : ""} {data?.mobileFriendly === true ? "Mobile" : ""})
-            </div>
-
-            {/* Orientation */}
-            <div>
-                orientation: {data?.orientation === "all"
-                    ? "Landscape and Portrait"
-                    : data?.orientation === "landscape"
-                        ? "Landscape"
-                        : data?.orientation === "portrait"
-                            ? "Portrait"
-                            : ""}
-            </div>
-
-            {/* Release date */}
-            <div>
-                release date: {formatDate(data?.pubDate)}
-            </div>
-
-            {/* Last update */}
-            <div>
-                last update: {formatDate(data?.updatedAt)}
-            </div>
-
-            {/* description */}
-            <div>
-                <pre>description: {data?.description}</pre>
-            </div>
-
-
-            {/* Rewarded Ads */}
-            <div>
-                <h1>{data.descriptionItems?.[0]?.title}</h1>
-                {data?.descriptionItems?.[0]?.content}
-            </div>
-
-
-
-            {/* how to play */}
-            <div>
-                <h1>how to play</h1>
-                <pre>{data.howToPlay}</pre>
-            </div>
-
-
-
-
-            {/* embeded link */}
-            {/* <div className="w-200 h-200">
-                <canvas  width={"700px"} height={"700px"} className='border' dangerouslySetInnerHTML={{ __html: data.embedCode }} />
-            </div> */}
-
-
-            {/* <div className='relative h-dvh max-w-10/12 rounded-3xl' dangerouslySetInnerHTML={{ __html: data.embedCode }} /> */}
-            <div className="" dangerouslySetInnerHTML={{ __html: data.embedCode }} />
-
-
-
-        </div>
-
+        )
     );
 }
+
