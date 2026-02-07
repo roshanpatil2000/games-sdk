@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import dynamic from 'next/dynamic'
 import axios from "axios";
 import { useRouter } from 'next/navigation'
+import { Spline } from "lucide-react";
+import SkeletonGrid from "@/components/SkeletonGrid";
 
 
 const StickyPagination = dynamic(
@@ -20,7 +22,7 @@ const StickyPagination = dynamic(
 
 export default function GameList() {
     const router = useRouter()
-
+    const [loading, setLoading] = useState(true);
     const [games, setGames] = useState<any[]>([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -36,12 +38,14 @@ export default function GameList() {
     // };
 
     const fetchGames = async (page: number) => {
+        setLoading(true);
         const res = await axios.get(`/api/gamesList?page=${page}`);
 
         const data = res.data
         const lastPage = Number(new URL(data?.last_page_url).searchParams.get("page"));
         setGames(data.items);
         setTotalPages(Math.ceil(lastPage)); // from last_page_url or metadata
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -57,6 +61,15 @@ export default function GameList() {
     const handleClick = (nameSpace: string) => {
         router.push(`/detail/${nameSpace}`)
     }
+
+
+
+
+
+    if (loading) {
+        return <SkeletonGrid count={12} />
+    }
+
     return (
 
         <div className="mt-12">
@@ -87,7 +100,7 @@ export default function GameList() {
 
 
             {
-                games && <StickyPagination
+                (games && !loading) && <StickyPagination
                     page={page}
                     totalPages={totalPages}
                     onPageChange={setPage}
