@@ -20,6 +20,8 @@ const StickyPagination = dynamic(
     }
 )
 
+
+
 export default function GameList() {
     const router = useRouter()
     const [loading, setLoading] = useState(true);
