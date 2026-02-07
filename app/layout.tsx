@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import BackToTop from "@/components/BackToTop";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
+import Script from "next/script";
 
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -31,9 +32,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={jetbrainsMono.variable} suppressHydrationWarning>
+      <head>
+        <meta name="5aee9cfd3e789bf778bf646a89168a1434b6d6fd" content="5aee9cfd3e789bf778bf646a89168a1434b6d6fd" />
+        {/* adsterra Popunder ads  */}
+        <script src="https://pl28670247.effectivegatecpm.com/5b/33/a3/5b33a3132415603db7aafc4fe32678cb.js"></script>
+
+
+
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <script src="https://charlottemice.com/5b/33/a3/5b33a3132415603db7aafc4fe32678cb.js"></script>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -46,6 +56,13 @@ export default function RootLayout({
         </ThemeProvider>
         <SpeedInsights />
         <Analytics />
+        {/* <script async="async" data-cfasync="false" src="https://pl28670306.effectivegatecpm.com/38fffe0d1714cf5ac3cc0455e8dd63de/invoke.js"></script>
+        <div id="container-38fffe0d1714cf5ac3cc0455e8dd63de"></div> */}
+
+
+
+        {/* adsterra Social Bar */}
+        <script src="https://pl28670647.effectivegatecpm.com/b5/c6/d0/b5c6d0de27480c1d95e5a14cef34229a.js"></script>
       </body>
     </html>
   );
