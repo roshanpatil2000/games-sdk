@@ -25,7 +25,12 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: "Game not found" }, { status: 404 });
     }
 
-    return NextResponse.json(rows[0], {
+    const game = rows[0];
+    if (game?.url) {
+        console.log(`[gameDetail] url=${game.url} namespace=${game.namespace} gameId=${game.gameID}`);
+    }
+
+    return NextResponse.json(game, {
         headers: {
             "Cache-Control": "public, s-maxage=600, stale-while-revalidate=300",
         },

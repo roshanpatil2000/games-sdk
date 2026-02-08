@@ -3,12 +3,13 @@
 import formatDate from '@/utils/formatDate';
 import formatNumber from '@/utils/formatNumber';
 import axios from 'axios';
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react';
 
 
 export default function gameGameDetails() {
     const { gameName } = useParams<{ gameName: string }>();
+    const router = useRouter();
 
     const [datails, setDetails] = useState<any>(null);
     const [tags, setTags] = useState<{ name: string, tagNamespace: string, tagNSLocale: string, title: string }[]>([]);
@@ -22,6 +23,9 @@ export default function gameGameDetails() {
         const detailData = detailRes.data;
         const dbData = dbRes.data;
 
+        if (dbData?.url) {
+            console.log(`[detail] url=${dbData.url} namespace=${gameName}`);
+        }
         setDetails({ ...detailData, dbUrl: dbData?.url });
         setTags(detailData.tags ?? []);
     };
@@ -76,12 +80,23 @@ export default function gameGameDetails() {
                                         allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write"
                                         sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock allow-top-navigation-by-user-activation"
                                         allowFullScreen
+                                        onLoad={() => {
+                                            if (datails?.dbUrl) {
+                                                console.log(`[detail iframe] url=${datails.dbUrl} namespace=${gameName}`);
+                                            }
+                                        }}
                                     />
                                 </div>
                                 <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-xs text-slate-300">
                                     <span>👍 {formatNumber(datails?.desktopUpVote + datails?.mobileUpVote)}</span>
                                     <span>🗳️ {totalVotes} votes</span>
                                     <span>⏱️ {datails?.orientation ?? "Not specified"}</span>
+                                    <button
+                                        className="rounded-md border border-slate-500 px-2 py-1 text-[10px] text-slate-200 hover:bg-white/10"
+                                        onClick={() => router.push(`/play/${gameName}`)}
+                                    >
+                                        Open Full Screen
+                                    </button>
                                 </div>
                             </div>
 
