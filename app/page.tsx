@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, Suspense } from "react";
 import dynamic from 'next/dynamic'
 import axios from "axios";
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -19,7 +19,7 @@ const StickyPagination = dynamic(
     }
 )
 
-export default function GameList() {
+function GameListInner() {
     const router = useRouter()
     const searchParams = useSearchParams();
     const [loading, setLoading] = useState(true);
@@ -181,5 +181,13 @@ export default function GameList() {
                 />
             }
         </div >
+    );
+}
+
+export default function GameList() {
+    return (
+        <Suspense fallback={<SkeletonGrid count={12} />}>
+            <GameListInner />
+        </Suspense>
     );
 }
