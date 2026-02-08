@@ -34,16 +34,36 @@ export default function RootLayout({
     <html lang="en" className={jetbrainsMono.variable} suppressHydrationWarning>
       <head>
         <meta name="5aee9cfd3e789bf778bf646a89168a1434b6d6fd" content="5aee9cfd3e789bf778bf646a89168a1434b6d6fd" />
+        <meta name="referrer" content="no-referrer-when-downgrade" />
+
         {/* adsterra Popunder ads  */}
-        <script src="https://pl28670247.effectivegatecpm.com/5b/33/a3/5b33a3132415603db7aafc4fe32678cb.js"></script>
+        {/* <script src="https://pl28670247.effectivegatecpm.com/5b/33/a3/5b33a3132415603db7aafc4fe32678cb.js"></script> */}
 
-
+        {/* hilltopads ads script */}
+        <Script
+          id="elderlygoal-inline-ad"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+      (function(wqo){
+        var d = document,
+            s = d.createElement('script'),
+            l = d.scripts[d.scripts.length - 1];
+        s.settings = wqo || {};
+        s.src = "//elderlygoal.com/c-DW9.6Eb/2q5LljS/WaQj9/NCjecP4PMojIcVyRMaSU0c2tNHzKgXyJNtzFI/1f";
+        s.async = true;
+        s.referrerPolicy = 'no-referrer-when-downgrade';
+        l.parentNode.insertBefore(s, l);
+      })({});
+    `,
+          }}
+        />
 
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <script src="https://charlottemice.com/5b/33/a3/5b33a3132415603db7aafc4fe32678cb.js"></script>
+        {/* <script src="https://charlottemice.com/5b/33/a3/5b33a3132415603db7aafc4fe32678cb.js"></script> */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -61,8 +81,16 @@ export default function RootLayout({
 
 
 
+
+
+
+
+
+
+
+
         {/* adsterra Social Bar */}
-        <script src="https://pl28670647.effectivegatecpm.com/b5/c6/d0/b5c6d0de27480c1d95e5a14cef34229a.js"></script>
+        {/* <script src="https://pl28670647.effectivegatecpm.com/b5/c6/d0/b5c6d0de27480c1d95e5a14cef34229a.js"></script> */}
       </body>
     </html>
   );
