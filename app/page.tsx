@@ -41,7 +41,7 @@ export default function GameList() {
     }
 
     const totalGames = games.length;
-    const adIndices = getRandomIndices(totalGames, 6);
+    const adIndices = getRandomIndices(totalGames, 1);
 
     // const fetchGames = async (page: number) => {
     //     const res = await fetch(
@@ -138,7 +138,7 @@ export default function GameList() {
                                 <p className="text-center text-sm">{game.category}</p>
                             </div>
                         </div>
-                        
+
                     </Fragment>
                 ))}
             </div>
