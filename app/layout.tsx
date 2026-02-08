@@ -4,9 +4,11 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 import Navbar from "@/components/Navbar";
 import BackToTop from "@/components/BackToTop";
+import Footer from "@/components/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
 import Script from "next/script";
+import { AdSense } from "@/components/AdSense";
 
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -68,6 +70,9 @@ export default function RootLayout({
 
 
 
+
+        <AdSense pId="8288956475423358" />
+
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -84,6 +89,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <BackToTop />
+          <Footer />
         </ThemeProvider>
         <SpeedInsights />
         <Analytics />
@@ -115,6 +121,12 @@ l.parentNode.insertBefore(s, l);
 
         {/* adsterra Social Bar */}
         {/* <script src="https://pl28670647.effectivegatecpm.com/b5/c6/d0/b5c6d0de27480c1d95e5a14cef34229a.js"></script> */}
+
+
+
+
+
+
       </body>
     </html>
   );
