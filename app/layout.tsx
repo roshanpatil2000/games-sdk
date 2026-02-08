@@ -40,7 +40,7 @@ export default function RootLayout({
         {/* <script src="https://pl28670247.effectivegatecpm.com/5b/33/a3/5b33a3132415603db7aafc4fe32678cb.js"></script> */}
 
         {/* hilltopads ads script */}
-        <Script
+        {/* <Script
           id="elderlygoal-inline-ad"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
@@ -57,13 +57,24 @@ export default function RootLayout({
       })({});
     `,
           }}
-        />
+        /> */}
+
+
+        {/* google adsense */}
+        <meta name="google-adsense-account" content="ca-pub-8288956475423358" />
+
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8288956475423358"
+          crossOrigin="anonymous"></script>
+
+
 
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {/* adsterra Popunder ads  */}
         {/* <script src="https://charlottemice.com/5b/33/a3/5b33a3132415603db7aafc4fe32678cb.js"></script> */}
+
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -76,18 +87,31 @@ export default function RootLayout({
         </ThemeProvider>
         <SpeedInsights />
         <Analytics />
-        {/* <script async="async" data-cfasync="false" src="https://pl28670306.effectivegatecpm.com/38fffe0d1714cf5ac3cc0455e8dd63de/invoke.js"></script>
+
+
+        {/* hilltopads ads script */}
+        {/* <Script
+          id="elderlygoal-inline-ad"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+    (function(fhe){
+var d = document,
+    s = d.createElement('script'),
+    l = d.scripts[d.scripts.length - 1];
+s.settings = fhe || {};
+s.src = "\/\/villainous-end.com\/bIXCVls.dqGBlX0eYmWTca\/fe\/mN9Vu\/ZTUslikaP\/TSY\/3LOrDDMixnOeTCMJtWNqjycP4lMdzUEx5dNawJ";
+s.async = true;
+s.referrerPolicy = 'no-referrer-when-downgrade';
+l.parentNode.insertBefore(s, l);
+})({})
+    `,
+          }}
+        /> */}
+
+
+        {/* <script async data-cfasync="false" src="https://pl28670306.effectivegatecpm.com/38fffe0d1714cf5ac3cc0455e8dd63de/invoke.js"></script>
         <div id="container-38fffe0d1714cf5ac3cc0455e8dd63de"></div> */}
-
-
-
-
-
-
-
-
-
-
 
         {/* adsterra Social Bar */}
         {/* <script src="https://pl28670647.effectivegatecpm.com/b5/c6/d0/b5c6d0de27480c1d95e5a14cef34229a.js"></script> */}
