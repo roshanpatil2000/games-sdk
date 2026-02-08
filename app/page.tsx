@@ -2,8 +2,7 @@
 import { useState, useEffect, Fragment } from "react";
 import dynamic from 'next/dynamic'
 import axios from "axios";
-import { useRouter } from 'next/navigation'
-import { Spline } from "lucide-react";
+import { useRouter, useSearchParams } from 'next/navigation'
 import SkeletonGrid from "@/components/SkeletonGrid";
 import Script from "next/script";
 
@@ -22,6 +21,7 @@ const StickyPagination = dynamic(
 
 export default function GameList() {
     const router = useRouter()
+    const searchParams = useSearchParams();
     const [loading, setLoading] = useState(true);
     const [games, setGames] = useState<any[]>([]);
     const [page, setPage] = useState(1);
@@ -53,10 +53,33 @@ export default function GameList() {
     //     setTotalPages(Math.ceil(lastPage)); // from last_page_url or metadata
     // };
 
-    const fetchGames = async (page: number) => {
-        setLoading(true);
-        const res = await axios.get(`/api/gamesList?page=${page}`);
+    const query = searchParams.get("q") ?? "";
+    const deviceParam = searchParams.get("device") ?? "desktop";
+    const device = deviceParam === "mobile" ? "mobile" : "desktop";
+    const isSearching = query.trim().length > 0;
 
+    const fetchGames = async (page: number, searchQuery: string, searchDevice: string) => {
+        setLoading(true);
+
+        if (searchQuery.trim()) {
+            const res = await axios.get(`https://api.gamepix.com/v3/games/search`, {
+                params: { ts: searchQuery.trim(), device: searchDevice },
+            });
+            const data = res.data ?? {};
+            const items =
+                data.items ??
+                data.games ??
+                data.results ??
+                data.data ??
+                [];
+
+            setGames(items);
+            setTotalPages(1);
+            setLoading(false);
+            return;
+        }
+
+        const res = await axios.get(`/api/gamesList?page=${page}`);
         const data = res.data
         const lastPage = Number(new URL(data?.last_page_url).searchParams.get("page"));
         setGames(data.items);
@@ -65,8 +88,14 @@ export default function GameList() {
     }
 
     useEffect(() => {
-        fetchGames(page);
-    }, [page]);
+        fetchGames(page, query, device);
+    }, [page, query, device]);
+
+    useEffect(() => {
+        if (isSearching) {
+            setPage(1);
+        }
+    }, [isSearching, query, device]);
 
 
     // const handleClick = (nameSpace: string) => {
@@ -145,7 +174,7 @@ export default function GameList() {
 
 
             {
-                (games && !loading) && <StickyPagination
+                (games && !loading && !isSearching) && <StickyPagination
                     page={page}
                     totalPages={totalPages}
                     onPageChange={setPage}
