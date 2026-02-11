@@ -29,7 +29,7 @@ export function getPaginationRange({
             "…",
             ...Array.from(
                 { length: 3 + siblingCount * 2 },
-                (_, i) => totalPages - (32 + siblingCount * 2) + i + 1
+                (_, i) => totalPages - (3 + siblingCount * 2) + i + 1
             )
         );
     } else {
