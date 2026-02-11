@@ -74,7 +74,7 @@ export function InputInputGroup() {
                 <Input
                     id="input-button-group"
                     placeholder="Type to search game..."
-                    className="text-primary placeholder:text-primary/50"
+                    className="text-foreground placeholder:text-muted-foreground"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
                     onKeyDown={(e) => {

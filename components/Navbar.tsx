@@ -10,7 +10,7 @@ export default function Navbar() {
     return (
         <>
             {/* Navbar */}
-            <div className="sticky top-0 z-50 flex justify-between items-center px-2 py-3 lg:px-10 bg-secondary/50 backdrop-blur supports-backdrop-filter:bg-secondary/80">
+            <div className="sticky top-0 z-50 flex items-center justify-between border-b border-border/60 bg-background/95 px-2 py-3 backdrop-blur supports-backdrop-filter:bg-background/90 lg:px-10">
                 {/* Logo */}
                 <h1 className="text-2xl font-bold uppercase">
                     Game<span className="text-primary">Pix</span>
@@ -41,7 +41,7 @@ export default function Navbar() {
 
             {/* Sidebar */}
             <div
-                className={`fixed top-0 right-0 z-50 h-full w-72 10 bg-secondary/50 backdrop-blur supports-backdrop-filter:bg-secondary/80 shadow-lg transform transition-transform duration-300 md:hidden
+                className={`fixed top-0 right-0 z-50 h-full w-72 border-l border-border/60 bg-background/95 text-foreground backdrop-blur supports-backdrop-filter:bg-background/90 shadow-lg transform transition-transform duration-300 md:hidden
         ${open ? "translate-x-0" : "translate-x-full"}`}
             >
                 {/* Close button */}
