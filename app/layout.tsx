@@ -80,7 +80,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          {children}
+          <main id="main-content">
+            {children}
+          </main>
           <BackToTop />
           <Footer />
         </ThemeProvider>
