@@ -5,6 +5,7 @@ import axios from "axios";
 import { useRouter, useSearchParams } from 'next/navigation'
 import SkeletonGrid from "@/components/SkeletonGrid";
 import Script from "next/script";
+import Image from "next/image";
 
 const StickyPagination = dynamic(
     () =>
@@ -41,17 +42,7 @@ function GameListInner() {
     }
 
     const totalGames = games.length;
-    const adIndices = getRandomIndices(totalGames, 1);
-
-    // const fetchGames = async (page: number) => {
-    //     const res = await fetch(
-    //         `https://feeds.gamepix.com/v2/json/?order=quality&page=${page}&pagination=48&sid=0E766`
-    //     );
-    //     const data = await res.json();
-    //     const lastPage = Number(new URL(data?.last_page_url).searchParams.get("page"));
-    //     setGames(data.items);
-    //     setTotalPages(Math.ceil(lastPage)); // from last_page_url or metadata
-    // };
+    const adIndices = getRandomIndices(totalGames, 6);
 
     const query = searchParams.get("q") ?? "";
     const deviceParam = searchParams.get("device") ?? "desktop";
@@ -126,7 +117,9 @@ function GameListInner() {
 
                 {games?.map((game: any, index: number) => (
                     <Fragment key={game.id ?? index}>
-                        {adIndices.includes(index) && games.length > index && (() => {
+
+                        {/* ad div */}
+                        {/* {adIndices.includes(index) && games.length > index && (() => {
                             const containerId = `container-38fffe0d1714cf5ac3cc0455e8dd63de`;
                             // const containerId = `container-38fffe0d1714cf5ac3cc0455e8dd63de`;
 
@@ -149,18 +142,19 @@ function GameListInner() {
                                     </div>
                                 </div>
                             );
-                        })()}
+                        })()} */}
 
                         <div
                             key={game.id ?? index}
                             className="relative group cursor-pointer"
                             onClick={() => handleClick(game.namespace)}
                         >
-                            <img
+                            {/* <img
                                 src={game?.banner_image}
                                 alt="Event cover"
                                 className="rounded-lg mb-2 hover:opacity-50 transition-opacity duration-300"
-                            />
+                            /> */}
+                            <Image src={game?.banner_image} width={300} height={"100"} alt={game?.title} className="rounded-lg" />
 
                             <div className="absolute inset-0 opacity-0 group-hover:opacity-95 bg-muted bg-opacity-75 rounded-lg transition-opacity duration-300 flex flex-col justify-center items-center p-4">
                                 <p className="text-center font-semibold">{game.title}</p>
