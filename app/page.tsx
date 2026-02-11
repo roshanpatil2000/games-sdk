@@ -1,187 +1,148 @@
-"use client"
-import { useState, useEffect, Fragment, Suspense } from "react";
-import dynamic from 'next/dynamic'
-import axios from "axios";
-import { useRouter, useSearchParams } from 'next/navigation'
-import SkeletonGrid from "@/components/SkeletonGrid";
-import Script from "next/script";
 import Image from "next/image";
+import Link from "next/link";
+import { getPaginationRange } from "@/lib/pagination";
 
-const StickyPagination = dynamic(
-    () =>
-        import("@/components/ui/sticky-pagination").then(
-            (mod) => mod.StickyPagination
-        ),
-    {
-        ssr: false, // important for client-only UI
-        loading: () => (
-            <div className="h-12 w-full animate-pulse rounded-md bg-muted" />
-        ),
-    }
-)
+type Game = {
+    id?: string;
+    namespace: string;
+    title: string;
+    category?: string | null;
+    banner_image?: string | null;
+};
 
-function GameListInner() {
-    const router = useRouter()
-    const searchParams = useSearchParams();
-    const [loading, setLoading] = useState(true);
-    const [games, setGames] = useState<any[]>([]);
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
+type PageProps = {
+    searchParams?: Promise<{
+        page?: string;
+        q?: string;
+        device?: string;
+    }>;
+};
 
-    function getRandomIndices(total: number, count = 6): number[] {
-        if (total <= 0) return [];
-
-        const max = Math.min(count, total);
-        const indices = new Set<number>();
-
-        while (indices.size < max) {
-            indices.add(Math.floor(Math.random() * total));
+async function fetchSearchResults(query: string, device: "desktop" | "mobile") {
+    const res = await fetch(
+        `https://api.gamepix.com/v3/games/search?ts=${encodeURIComponent(query)}&device=${device}`,
+        {
+            next: { revalidate: 300 },
+            headers: { Accept: "application/json" },
         }
+    );
 
-        return Array.from(indices);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.items ?? data.games ?? data.results ?? data.data ?? []) as Game[];
+}
+
+async function fetchGamesPage(page: number) {
+    const url = `https://feeds.gamepix.com/v2/json/?order=quality&page=${page}&pagination=48&sid=0E766`;
+    const res = await fetch(url, {
+        next: { revalidate: 600 },
+        headers: { Accept: "application/json" },
+    });
+
+    if (!res.ok) {
+        return { items: [] as Game[], totalPages: 1 };
     }
 
-    const totalGames = games.length;
-    const adIndices = getRandomIndices(totalGames, 6);
+    const data = await res.json();
+    const lastPage = data?.last_page_url
+        ? Number(new URL(data.last_page_url).searchParams.get("page") ?? "1")
+        : 1;
 
-    const query = searchParams.get("q") ?? "";
-    const deviceParam = searchParams.get("device") ?? "desktop";
-    const device = deviceParam === "mobile" ? "mobile" : "desktop";
-    const isSearching = query.trim().length > 0;
+    return {
+        items: (data.items ?? []) as Game[],
+        totalPages: Number.isFinite(lastPage) && lastPage > 0 ? Math.ceil(lastPage) : 1,
+    };
+}
 
-    const fetchGames = async (page: number, searchQuery: string, searchDevice: string) => {
-        setLoading(true);
+function buildPageHref(page: number) {
+    return `/?page=${page}`;
+}
 
-        if (searchQuery.trim()) {
-            const res = await axios.get(`https://api.gamepix.com/v3/games/search`, {
-                params: { ts: searchQuery.trim(), device: searchDevice },
-            });
-            const data = res.data ?? {};
-            const items =
-                data.items ??
-                data.games ??
-                data.results ??
-                data.data ??
-                [];
+export default async function GameList({ searchParams }: PageProps) {
+    const params = (await searchParams) ?? {};
+    const page = Math.max(1, Number(params.page ?? "1") || 1);
+    const query = (params.q ?? "").trim();
+    const device = params.device === "mobile" ? "mobile" : "desktop";
+    const isSearching = query.length > 0;
 
-            setGames(items);
-            setTotalPages(1);
-            setLoading(false);
-            return;
-        }
-
-        const res = await axios.get(`/api/gamesList?page=${page}`);
-        const data = res.data
-        const lastPage = Number(new URL(data?.last_page_url).searchParams.get("page"));
-        setGames(data.items);
-        setTotalPages(Math.ceil(lastPage)); // from last_page_url or metadata
-        setLoading(false);
-    }
-
-    useEffect(() => {
-        fetchGames(page, query, device);
-    }, [page, query, device]);
-
-    useEffect(() => {
-        if (isSearching) {
-            setPage(1);
-        }
-    }, [isSearching, query, device]);
-
-
-    // const handleClick = (nameSpace: string) => {
-    //     router.push(`/detail/${nameSpace}`)
-    //     // console.log("nameSpace", nameSpace)
-    // }
-
-    const handleClick = (nameSpace: string) => {
-        router.push(`/detail/${nameSpace}`)
-    }
-
-
-
-
-
-    if (loading) {
-        return <SkeletonGrid count={12} />
-    }
+    const { items: pageItems, totalPages } = await fetchGamesPage(page);
+    const games = isSearching ? await fetchSearchResults(query, device) : pageItems;
+    const pages = getPaginationRange({ currentPage: page, totalPages });
 
     return (
-
         <div className="mt-12">
-            {/* TODO- Discover  */}
-
-
-            {/* Feeds */}
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6  gap-4 m-4">
-
-                {games?.map((game: any, index: number) => (
-                    <Fragment key={game.id ?? index}>
-
-                        {/* ad div */}
-                        {/* {adIndices.includes(index) && games.length > index && (() => {
-                            const containerId = `container-38fffe0d1714cf5ac3cc0455e8dd63de`;
-                            // const containerId = `container-38fffe0d1714cf5ac3cc0455e8dd63de`;
-
-                            return (
-                                <div
-                                    key={`ad-slot-${index}`}
-                                    className=""
-                                >
-                                    <div className="ad-slot">
-                                        <Script
-                                            async
-                                            data-cfasync="false"
-                                            src="https://pl28670306.effectivegatecpm.com/38fffe0d1714cf5ac3cc0455e8dd63de/invoke.js"
-                                            strategy="afterInteractive"
-                                        />
-                                        <div
-                                            id={containerId}
-                                            className="w-full h-full"
-                                        />
-                                    </div>
-                                </div>
-                            );
-                        })()} */}
-
-                        <div
-                            key={game.id ?? index}
-                            className="relative group cursor-pointer"
-                            onClick={() => handleClick(game.namespace)}
-                        >
-                            {/* <img
-                                src={game?.banner_image}
-                                alt="Event cover"
-                                className="rounded-lg mb-2 hover:opacity-50 transition-opacity duration-300"
-                            /> */}
-                            <Image src={game?.banner_image} width={300} height={"100"} alt={game?.title} className="rounded-lg" />
-
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-95 bg-muted bg-opacity-75 rounded-lg transition-opacity duration-300 flex flex-col justify-center items-center p-4">
-                                <p className="text-center font-semibold">{game.title}</p>
-                                <p className="text-center text-sm">{game.category}</p>
-                            </div>
+            <div className="m-4 grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
+                {games.map((game, index) => (
+                    <Link
+                        key={game.id ?? `${game.namespace}-${index}`}
+                        href={`/detail/${game.namespace}`}
+                        className="relative group block"
+                    >
+                        <Image
+                            src={game.banner_image || "/next.svg"}
+                            width={640}
+                            height={360}
+                            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 16vw"
+                            priority={index < 2}
+                            loading={index < 2 ? "eager" : "lazy"}
+                            alt={game.title}
+                            className="h-auto w-full rounded-lg object-cover"
+                        />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center rounded-lg bg-muted p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-95">
+                            <p className="text-center font-semibold">{game.title}</p>
+                            <p className="text-center text-sm">{game.category}</p>
                         </div>
-
-                    </Fragment>
+                    </Link>
                 ))}
             </div>
 
-
-            {
-                (games && !loading && !isSearching) && <StickyPagination
-                    page={page}
-                    totalPages={totalPages}
-                    onPageChange={setPage}
-                />
-            }
-        </div >
-    );
-}
-
-export default function GameList() {
-    return (
-        <Suspense fallback={<SkeletonGrid count={12} />}>
-            <GameListInner />
-        </Suspense>
+            {!isSearching && (
+                <div className="sticky bottom-0 z-50 border-t bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80">
+                    <div className="mx-auto flex max-w-7xl items-center justify-center gap-1 px-3 py-3 sm:gap-2">
+                        <Link
+                            href={buildPageHref(1)}
+                            className={`hidden rounded-md border px-3 py-1 text-sm sm:inline-flex ${page === 1 ? "pointer-events-none opacity-50" : ""}`}
+                        >
+                            First
+                        </Link>
+                        <Link
+                            href={buildPageHref(Math.max(1, page - 1))}
+                            className={`hidden rounded-md border px-3 py-1 text-sm sm:inline-flex ${page === 1 ? "pointer-events-none opacity-50" : ""}`}
+                        >
+                            Prev
+                        </Link>
+                        <div className="flex items-center gap-1">
+                            {pages.map((p, i) =>
+                                p === "…" ? (
+                                    <span key={i} className="px-2 text-sm text-muted-foreground">
+                                        …
+                                    </span>
+                                ) : (
+                                    <Link
+                                        key={`${p}-${i}`}
+                                        href={buildPageHref(p as number)}
+                                        className={`min-w-9 rounded-md border px-3 py-1 text-center text-sm ${p === page ? "pointer-events-none bg-primary text-primary-foreground" : ""}`}
+                                    >
+                                        {p}
+                                    </Link>
+                                )
+                            )}
+                        </div>
+                        <Link
+                            href={buildPageHref(Math.min(totalPages, page + 1))}
+                            className={`hidden rounded-md border px-3 py-1 text-sm sm:inline-flex ${page === totalPages ? "pointer-events-none opacity-50" : ""}`}
+                        >
+                            Next
+                        </Link>
+                        <Link
+                            href={buildPageHref(totalPages)}
+                            className={`hidden rounded-md border px-3 py-1 text-sm sm:inline-flex ${page === totalPages ? "pointer-events-none opacity-50" : ""}`}
+                        >
+                            Last
+                        </Link>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 }

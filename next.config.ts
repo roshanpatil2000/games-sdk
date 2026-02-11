@@ -1,9 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  productionBrowserSourceMaps: true,
   images: {
-    domains: ['img.gamepix.com'],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "img.gamepix.com",
+      },
+    ],
   },
 };
 

@@ -7,8 +7,8 @@ import BackToTop from "@/components/BackToTop";
 import Footer from "@/components/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
-import Script from "next/script";
 import { AdSense } from "@/components/AdSense";
+import AdConsentBanner from "@/components/AdConsentBanner";
 
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -37,6 +37,8 @@ export default function RootLayout({
       <head>
         <meta name="5aee9cfd3e789bf778bf646a89168a1434b6d6fd" content="5aee9cfd3e789bf778bf646a89168a1434b6d6fd" />
         <meta name="referrer" content="no-referrer-when-downgrade" />
+        <link rel="dns-prefetch" href="//img.gamepix.com" />
+        <link rel="preconnect" href="https://img.gamepix.com" crossOrigin="" />
 
         {/* adsterra Popunder ads  */}
         {/* <script src="https://pl28670247.effectivegatecpm.com/5b/33/a3/5b33a3132415603db7aafc4fe32678cb.js"></script> */}
@@ -64,15 +66,6 @@ export default function RootLayout({
 
         {/* google adsense */}
         <meta name="google-adsense-account" content="ca-pub-8288956475423358" />
-
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8288956475423358"
-          crossOrigin="anonymous"></script>
-
-
-
-
-        <AdSense pId="8288956475423358" />
-
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -93,6 +86,8 @@ export default function RootLayout({
         </ThemeProvider>
         <SpeedInsights />
         <Analytics />
+        <AdConsentBanner />
+        <AdSense pId="8288956475423358" />
 
 
         {/* hilltopads ads script */}
