@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function Footer() {
     const currentYear = new Date().getFullYear();
 
@@ -9,9 +7,9 @@ export default function Footer() {
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
                     {/* About Section */}
                     <div>
-                        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                             About GamePix
-                        </h3>
+                        </h2>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
                             Your ultimate source for game information, reviews, and discovery. Find your next favorite game today.
                         </p>
@@ -19,9 +17,9 @@ export default function Footer() {
 
                     {/* Quick Links */}
                     <div>
-                        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                             Quick Links
-                        </h3>
+                        </h2>
                         <ul className="space-y-2">
                             <li>
                                 <a
@@ -52,9 +50,9 @@ export default function Footer() {
 
                     {/* Legal Section */}
                     <div>
-                        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                             Legal
-                        </h3>
+                        </h2>
                         <ul className="space-y-2">
                             <li>
                                 <a
