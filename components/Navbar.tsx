@@ -3,6 +3,7 @@ import { useState } from "react";
 import { InputInputGroup } from "./Input";
 import { ToggleTheme } from "./ToggleTheme";
 import { ToggleThemeMobile } from "./ToggleThemeMobile";
+import Link from "next/link";
 
 export default function Navbar() {
     const [open, setOpen] = useState(false);
@@ -12,10 +13,11 @@ export default function Navbar() {
             {/* Navbar */}
             <div className="sticky top-0 z-50 flex items-center justify-between border-b border-border/60 bg-background/95 px-2 py-3 backdrop-blur supports-backdrop-filter:bg-background/90 lg:px-10">
                 {/* Logo */}
-                <h1 className="text-2xl font-bold uppercase">
-                    Game<span className="text-primary">Pix</span>
-                </h1>
-
+                <Link href={"/"} >
+                    <h1 className="text-2xl font-bold uppercase">
+                        Game<span className="text-primary">Pix</span>
+                    </h1>
+                </Link>
                 {/* Desktop */}
                 <div className="hidden md:flex gap-3 lg:gap-10">
                     <InputInputGroup />
