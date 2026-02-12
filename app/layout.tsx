@@ -51,6 +51,14 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="//img.gamepix.com" />
         <link rel="preconnect" href="https://img.gamepix.com" crossOrigin="" />
 
+        <Script
+          id="speedvitals-rum"
+          data-rum-site-id="05035613-2bc3-4d13-83ac-9e544044a0d0"
+          data-rum-spa="true"
+          src="https://assets.speedvitals.com/vitals.min.js"
+          strategy="afterInteractive"
+        />
+
         {/* adsterra Popunder ads  */}
         {/* <script src="https://pl28670247.effectivegatecpm.com/5b/33/a3/5b33a3132415603db7aafc4fe32678cb.js"></script> */}
 
@@ -102,13 +110,7 @@ export default function RootLayout({
         </ThemeProvider>
         <SpeedInsights />
         <Analytics />
-        <Script
-          id="speedvitals-rum"
-          data-rum-site-id="05035613-2bc3-4d13-83ac-9e544044a0d0"
-          data-rum-spa="true"
-          src="https://assets.speedvitals.com/vitals.min.js"
-          strategy="afterInteractive"
-        />
+
         <AdConsentBanner />
         <AdSense pId="8288956475423358" />
 
