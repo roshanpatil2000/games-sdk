@@ -3,10 +3,40 @@ import { notFound } from "next/navigation";
 import formatDate from "@/utils/formatDate";
 import formatNumber from "@/utils/formatNumber";
 import { getMergedGameDetail } from "@/lib/game-data";
+import type { Metadata } from "next";
 
 type DetailPageProps = {
     params: Promise<{ gameName: string }>;
 };
+
+export async function generateMetadata({ params }: DetailPageProps): Promise<Metadata> {
+    const { gameName } = await params;
+    const details = await getMergedGameDetail(gameName);
+    const title = details?.title ? `${details.title} | GamePix` : `${gameName} | GamePix`;
+    const description =
+        details?.description?.slice(0, 160) ||
+        `Play ${details?.title ?? gameName} online on GamePix.`;
+    const image = details?.banner_image || details?.image || "/og.png";
+
+    return {
+        title,
+        description,
+        alternates: {
+            canonical: `/detail/${gameName}`,
+        },
+        openGraph: {
+            title,
+            description,
+            url: `/detail/${gameName}`,
+            images: [
+                {
+                    url: image,
+                    alt: details?.title ?? gameName,
+                },
+            ],
+        },
+    };
+}
 
 export default async function GameDetailsPage({ params }: DetailPageProps) {
     const { gameName } = await params;

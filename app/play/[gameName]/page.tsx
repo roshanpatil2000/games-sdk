@@ -1,10 +1,34 @@
 import PlayBackButton from "@/components/PlayBackButton";
 import { getDbGame } from "@/lib/game-data";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 type PlayPageProps = {
     params: Promise<{ gameName: string }>;
 };
+
+export async function generateMetadata({ params }: PlayPageProps): Promise<Metadata> {
+    const { gameName } = await params;
+    const game = await getDbGame(gameName);
+    const title = game?.title ? `Play ${game.title} | GamePix` : `Play ${gameName} | GamePix`;
+
+    return {
+        title,
+        description: game?.title
+            ? `Play ${game.title} online instantly on GamePix.`
+            : `Play ${gameName} online instantly on GamePix.`,
+        alternates: {
+            canonical: `/play/${gameName}`,
+        },
+        openGraph: {
+            title,
+            description: game?.title
+                ? `Play ${game.title} online instantly on GamePix.`
+                : `Play ${gameName} online instantly on GamePix.`,
+            url: `/play/${gameName}`,
+        },
+    };
+}
 
 export default async function PlayPage({ params }: PlayPageProps) {
     const { gameName } = await params;

@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/db/drizzle";
 import { gamesTable } from "@/db/schema";
+import { cache } from "react";
 
 type GamePixTag = {
     title?: string;
@@ -12,6 +13,8 @@ export type GameDetailData = {
     description?: string;
     orientation?: string;
     platforms?: string;
+    image?: string;
+    banner_image?: string;
     pubDate?: string;
     updatedAt?: string;
     desktopUpVote?: number;
@@ -23,7 +26,7 @@ export type GameDetailData = {
     dbUrl?: string | null;
 };
 
-export async function getDbGame(namespace: string) {
+export const getDbGame = cache(async (namespace: string) => {
     const rows = await db
         .select()
         .from(gamesTable)
@@ -31,9 +34,9 @@ export async function getDbGame(namespace: string) {
         .limit(1);
 
     return rows[0] ?? null;
-}
+});
 
-export async function getMergedGameDetail(namespace: string): Promise<GameDetailData | null> {
+export const getMergedGameDetail = cache(async (namespace: string): Promise<GameDetailData | null> => {
     const [dbGame, gamePixRes] = await Promise.all([
         getDbGame(namespace),
         fetch(`https://api.gamepix.com/v3/games/ns/${namespace}`, {
@@ -50,4 +53,4 @@ export async function getMergedGameDetail(namespace: string): Promise<GameDetail
         ...gamePixData,
         dbUrl: dbGame?.url ?? null,
     };
-}
+});

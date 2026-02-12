@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getPaginationRange } from "@/lib/pagination";
+import type { Metadata } from "next";
 
 type Game = {
     id?: string;
@@ -17,6 +18,41 @@ type PageProps = {
         device?: string;
     }>;
 };
+
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+    const params = (await searchParams) ?? {};
+    const query = (params.q ?? "").trim();
+    const page = Math.max(1, Number(params.page ?? "1") || 1);
+
+    if (query) {
+        const title = `Search: ${query} | GamePix`;
+        return {
+            title,
+            description: `Browse search results for "${query}" on GamePix.`,
+            openGraph: {
+                title,
+                description: `Browse search results for "${query}" on GamePix.`,
+                url: `/?q=${encodeURIComponent(query)}&device=desktop`,
+            },
+        };
+    }
+
+    const title = page > 1 ? `GamePix - Page ${page}` : "GamePix";
+    const description =
+        page > 1
+            ? `Discover browser games on GamePix. Viewing page ${page}.`
+            : "Play 10k+ games without installation.";
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            url: page > 1 ? `/?page=${page}` : "/",
+        },
+    };
+}
 
 async function fetchSearchResults(query: string, device: "desktop" | "mobile") {
     const res = await fetch(
