@@ -71,6 +71,9 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
 
+
+        <script src="https://analytics.ahrefs.com/analytics.js" data-key="Pc38PjKXrLJUUuMnLmtJ7Q" async></script>
+
         {/* adsterra Popunder ads  */}
         {/* <script src="https://pl28670247.effectivegatecpm.com/5b/33/a3/5b33a3132415603db7aafc4fe32678cb.js"></script> */}
 
