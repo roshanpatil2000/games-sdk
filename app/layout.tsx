@@ -64,6 +64,13 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
 
+        <Script
+          id="ahrefs-analytics"
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key="Pc38PjKXrLJUUuMnLmtJ7Q"
+          strategy="afterInteractive"
+        />
+
         {/* adsterra Popunder ads  */}
         {/* <script src="https://pl28670247.effectivegatecpm.com/5b/33/a3/5b33a3132415603db7aafc4fe32678cb.js"></script> */}
 
