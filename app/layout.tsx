@@ -100,6 +100,7 @@ export default function RootLayout({
 
         {/* google adsense */}
         <meta name="google-adsense-account" content="ca-pub-8288956475423358" />
+        <meta name="ahrefs-site-verification" content="f6f05b0ed23e12419f656b28c59553f855937ded7c7d26d7db499467e18d4689" />
 
 
 
