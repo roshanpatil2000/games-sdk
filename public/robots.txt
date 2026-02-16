@@ -1,4 +1,14 @@
 User-agent: *
 Allow: /
 
+# Block Next.js internals (usually unnecessary for bots)
+Disallow: /_next/
+Disallow: /api/
+
+# Block common low-value pages (adjust if you use them)
+Disallow: /search
+Disallow: /*?utm_
+Disallow: /*?filter=
+
+# Sitemap
 Sitemap: https://www.techbeas.co.in/sitemap.xml
