@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { db } from "@/db/drizzle";
-import { gamesTable } from "@/db/schema";
-import { ilike, or } from "drizzle-orm";
+import { searchGamesInDb } from "@/lib/local-games";
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -13,20 +11,7 @@ export async function GET(request: Request) {
         return NextResponse.json({ items: [] });
     }
 
-    const pattern = `%${q}%`;
-
-    const items = await db
-        .select()
-        .from(gamesTable)
-        .where(
-            or(
-                ilike(gamesTable.title, pattern),
-                ilike(gamesTable.namespace, pattern),
-                ilike(gamesTable.category, pattern),
-                ilike(gamesTable.description, pattern)
-            )
-        )
-        .limit(limit);
+    const items = await searchGamesInDb(q, limit);
 
     return NextResponse.json({ items }, {
         headers: {

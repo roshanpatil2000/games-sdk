@@ -14,9 +14,9 @@ export default function Navbar() {
             <div className="sticky top-0 z-50 flex items-center justify-between border-b border-border/60 bg-background/95 px-2 py-3 backdrop-blur supports-backdrop-filter:bg-background/90 lg:px-10">
                 {/* Logo */}
                 <Link href={"/"} >
-                    <h1 className="text-2xl font-bold uppercase">
+                    <span className="text-2xl font-bold uppercase">
                         Game<span className="text-primary">Pix</span>
-                    </h1>
+                    </span>
                 </Link>
                 {/* Desktop */}
                 <div className="hidden md:flex gap-3 lg:gap-10">

@@ -7,9 +7,8 @@ import BackToTop from "@/components/BackToTop";
 import Footer from "@/components/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
-import { AdSense } from "@/components/AdSense";
-import AdConsentBanner from "@/components/AdConsentBanner";
 import Script from "next/script";
+import AdConsentBanner from "@/components/AdConsentBanner";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -34,12 +33,31 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'GamePix',
     description: 'Play 10k+ games without installation',
+    type: 'website',
     images: [{
       url: '/og.png',  // Next.js automatically prepends your domain
       width: 1200,
       height: 630,
       alt: 'Site preview'
     }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'GamePix',
+    description: 'Play 10k+ games without installation',
+    images: ['/og.png'],
+  },
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "GamePix",
+  url: siteUrl,
+  potentialAction: {
+    "@type": "SearchAction",
+    target: `${siteUrl}/?q={search_term_string}`,
+    "query-input": "required name=search_term_string",
   },
 };
 
@@ -56,12 +74,9 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="//img.gamepix.com" />
         <link rel="preconnect" href="https://img.gamepix.com" crossOrigin="" />
 
-        <Script
-          id="speedvitals-rum"
-          data-rum-site-id="05035613-2bc3-4d13-83ac-9e544044a0d0"
-          data-rum-spa="true"
-          src="https://assets.speedvitals.com/vitals.min.js"
-          strategy="afterInteractive"
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
 
         <Script
@@ -72,36 +87,10 @@ export default function RootLayout({
         />
 
 
-        <script src="https://analytics.ahrefs.com/analytics.js" data-key="Pc38PjKXrLJUUuMnLmtJ7Q" async></script>
-
-        {/* adsterra Popunder ads  */}
-        {/* <script src="https://pl28670247.effectivegatecpm.com/5b/33/a3/5b33a3132415603db7aafc4fe32678cb.js"></script> */}
-
-        {/* hilltopads ads script */}
-        {/* <Script
-          id="elderlygoal-inline-ad"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-      (function(wqo){
-        var d = document,
-            s = d.createElement('script'),
-            l = d.scripts[d.scripts.length - 1];
-        s.settings = wqo || {};
-        s.src = "//elderlygoal.com/c-DW9.6Eb/2q5LljS/WaQj9/NCjecP4PMojIcVyRMaSU0c2tNHzKgXyJNtzFI/1f";
-        s.async = true;
-        s.referrerPolicy = 'no-referrer-when-downgrade';
-        l.parentNode.insertBefore(s, l);
-      })({});
-    `,
-          }}
-        /> */}
-
 
         {/* google adsense */}
         <meta name="google-adsense-account" content="ca-pub-8288956475423358" />
         <meta name="ahrefs-site-verification" content="f6f05b0ed23e12419f656b28c59553f855937ded7c7d26d7db499467e18d4689" />
-        <meta name="robots" content="index, follow" />
 
 
       </head>
@@ -109,7 +98,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* adsterra Popunder ads  */}
-        {/* <script src="https://charlottemice.com/5b/33/a3/5b33a3132415603db7aafc4fe32678cb.js"></script> */}
+        <Script
+          id="adsterra-popunder"
+          src="https://deeprootedpressure.com/62/e9/cd/62e9cd0b5b4dd9e2248602658b4c2464.js"
+          strategy="afterInteractive"
+        />
 
         <ThemeProvider
           attribute="class"
@@ -128,38 +121,14 @@ export default function RootLayout({
         <Analytics />
 
         <AdConsentBanner />
-        <AdSense pId="8288956475423358" />
 
-
-        {/* hilltopads ads script */}
-        {/* <Script
-          id="elderlygoal-inline-ad"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-    (function(fhe){
-var d = document,
-    s = d.createElement('script'),
-    l = d.scripts[d.scripts.length - 1];
-s.settings = fhe || {};
-s.src = "\/\/villainous-end.com\/bIXCVls.dqGBlX0eYmWTca\/fe\/mN9Vu\/ZTUslikaP\/TSY\/3LOrDDMixnOeTCMJtWNqjycP4lMdzUEx5dNawJ";
-s.async = true;
-s.referrerPolicy = 'no-referrer-when-downgrade';
-l.parentNode.insertBefore(s, l);
-})({})
-    `,
-          }}
-        /> */}
-
-
-        {/* <script async data-cfasync="false" src="https://pl28670306.effectivegatecpm.com/38fffe0d1714cf5ac3cc0455e8dd63de/invoke.js"></script>
-        <div id="container-38fffe0d1714cf5ac3cc0455e8dd63de"></div> */}
 
         {/* adsterra Social Bar */}
-        {/* <script src="https://pl28670647.effectivegatecpm.com/b5/c6/d0/b5c6d0de27480c1d95e5a14cef34229a.js"></script> */}
-
-
-
+        <Script
+          id="adsterra-social-bar"
+          src="https://deeprootedpressure.com/c3/e2/ce/c3e2cebf7030ca12429ff6abd6d898f0.js"
+          strategy="afterInteractive"
+        />
 
 
 

@@ -5,10 +5,9 @@ Allow: /
 Disallow: /_next/
 Disallow: /api/
 
-# Block common low-value pages (adjust if you use them)
-Disallow: /search
+# Search and pagination pages are noindexed via meta tag (not blocked here)
+# so crawlers can still see that tag and drop them from the index.
 Disallow: /*?utm_
-Disallow: /*?filter=
 
 # Sitemap
 Sitemap: https://www.techbeas.co.in/sitemap.xml

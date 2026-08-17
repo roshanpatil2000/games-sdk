@@ -1,10 +1,13 @@
+import Link from "next/link";
+import { POPULAR_CATEGORIES, formatCategoryLabel } from "@/lib/categories";
+
 export default function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
         <footer className="border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
             <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
                     {/* About Section */}
                     <div>
                         <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
@@ -70,6 +73,25 @@ export default function Footer() {
                                     Terms of Service
                                 </a>
                             </li>
+                        </ul>
+                    </div>
+
+                    {/* Popular Genres */}
+                    <div>
+                        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                            Popular Genres
+                        </h2>
+                        <ul className="grid grid-cols-2 gap-2">
+                            {POPULAR_CATEGORIES.map((genre) => (
+                                <li key={genre}>
+                                    <Link
+                                        href={`/genre/${genre}`}
+                                        className="text-sm text-gray-600 transition hover:text-blue-500 dark:text-gray-400 dark:hover:text-blue-400"
+                                    >
+                                        {formatCategoryLabel(genre)}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 </div>

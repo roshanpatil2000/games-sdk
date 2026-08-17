@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { db } from "@/db/drizzle";
 import { gamesTable } from "@/db/schema";
+import { POPULAR_CATEGORIES } from "@/lib/categories";
 
 function getBaseUrl() {
     const envUrl =
@@ -39,6 +40,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: "yearly",
             priority: 0.4,
         },
+        {
+            url: `${baseUrl}/most-played`,
+            lastModified: new Date(),
+            changeFrequency: "daily",
+            priority: 0.8,
+        },
+        ...POPULAR_CATEGORIES.map((tag) => ({
+            url: `${baseUrl}/genre/${tag}`,
+            lastModified: new Date(),
+            changeFrequency: "daily" as const,
+            priority: 0.7,
+        })),
     ];
 
     try {

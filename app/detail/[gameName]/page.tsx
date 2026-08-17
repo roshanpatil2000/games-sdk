@@ -1,9 +1,34 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import formatDate from "@/utils/formatDate";
 import formatNumber from "@/utils/formatNumber";
 import { getMergedGameDetail } from "@/lib/game-data";
+import { fetchGamepixTag } from "@/lib/gamepix";
+import AdsterraNative from "@/components/AdsterraNative";
+import AdsterraBanner from "@/components/AdsterraBanner";
+import GamePlayer from "@/components/GamePlayer";
+import GameGrid, { type GameGridItem } from "@/components/GameGrid";
 import type { Metadata } from "next";
+
+type RelatedItem = {
+    gameNamespace: string;
+    gameId?: string;
+    title: string;
+};
+
+async function fetchRelatedGames(tagNamespace: string, currentNamespace: string): Promise<GameGridItem[]> {
+    const data = await fetchGamepixTag(tagNamespace, "desktop", 9);
+    const items = (data.items ?? []) as RelatedItem[];
+
+    return items
+        .filter((item) => item.gameNamespace !== currentNamespace)
+        .slice(0, 8)
+        .map((item) => ({
+            id: item.gameId,
+            namespace: item.gameNamespace,
+            title: item.title,
+            banner_image: `https://img.gamepix.com/games/${item.gameNamespace}/cover/${item.gameNamespace}.png?w=320`,
+        }));
+}
 
 type DetailPageProps = {
     params: Promise<{ gameName: string }>;
@@ -54,9 +79,41 @@ export default async function GameDetailsPage({ params }: DetailPageProps) {
     const releaseDate = details.pubDate ? formatDate(details.pubDate) : "N/A";
     const updateDate = details.updatedAt ? formatDate(details.updatedAt) : "N/A";
     const tags = Array.isArray(details.tags) ? details.tags : [];
+    const firstTagNamespace = tags[0]?.tagNamespace;
+    const relatedGames = firstTagNamespace
+        ? await fetchRelatedGames(firstTagNamespace, gameName)
+        : [];
+
+    const gameJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        name: details.title ?? gameName,
+        description: details.description || `Play ${details.title ?? gameName} online on GamePix.`,
+        image: details.banner_image || details.image,
+        genre: tags.map((tag) => tag.title).filter(Boolean),
+        applicationCategory: "Game",
+        operatingSystem: "Any",
+        ...(score > 0 && {
+            aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: score,
+                bestRating: 10,
+                ratingCount: Math.max(upVotes, 1),
+            },
+        }),
+        offers: {
+            "@type": "Offer",
+            price: 0,
+            priceCurrency: "USD",
+        },
+    };
 
     return (
         <div className="min-h-screen bg-[#08152d] text-white">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(gameJsonLd) }}
+            />
             <div className="mx-auto max-w-7xl px-4 py-6 lg:py-10">
                 <div className="flex flex-wrap items-center gap-3 text-sm text-slate-300">
                     <h1 className="text-2xl font-semibold text-white">{details.title ?? gameName}</h1>
@@ -69,34 +126,16 @@ export default async function GameDetailsPage({ params }: DetailPageProps) {
 
                 <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
                     <div className="space-y-6">
-                        <div className="rounded-2xl bg-[#0b2044] shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-                            <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black/20">
-                                {details.dbUrl ? (
-                                    <iframe
-                                        title={details.title ? `${details.title} game` : "Game"}
-                                        src={details.dbUrl}
-                                        className="absolute inset-0 h-full w-full"
-                                        allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write"
-                                        sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock allow-top-navigation-by-user-activation"
-                                        allowFullScreen
-                                    />
-                                ) : (
-                                    <div className="flex h-full items-center justify-center text-sm text-slate-300">
-                                        Play URL unavailable for this game.
-                                    </div>
-                                )}
-                            </div>
-                            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-xs text-slate-300">
-                                <span>👍 {formatNumber(upVotes)}</span>
-                                <span>🗳️ {totalVotes} votes</span>
-                                <span>⏱️ {details.orientation ?? "Not specified"}</span>
-                                <Link
-                                    className="rounded-md border border-slate-500 px-2 py-1 text-[10px] text-slate-200 hover:bg-white/10"
-                                    href={`/play/${gameName}`}
-                                >
-                                    Open Full Screen
-                                </Link>
-                            </div>
+                        <GamePlayer
+                            title={details.title ? `${details.title} game` : "Game"}
+                            src={details.dbUrl}
+                            upVotes={upVotes}
+                            totalVotes={totalVotes}
+                            orientation={details.orientation}
+                        />
+
+                        <div className="flex justify-center rounded-2xl bg-[#0b2044] p-5">
+                            <AdsterraNative />
                         </div>
 
                         <div className="rounded-2xl bg-[#0b2044] p-5">
@@ -142,6 +181,20 @@ export default async function GameDetailsPage({ params }: DetailPageProps) {
                                 </div>
                             )}
                         </div>
+
+                        {relatedGames.length > 0 && (
+                            <div className="rounded-2xl bg-[#0b2044] p-5">
+                                <h2 className="mb-4 text-sm font-semibold text-slate-200">More like this</h2>
+                                <GameGrid
+                                    games={relatedGames}
+                                    className="grid grid-cols-2 gap-4 sm:grid-cols-4"
+                                />
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex justify-center lg:justify-start">
+                        <AdsterraBanner />
                     </div>
                 </div>
             </div>
