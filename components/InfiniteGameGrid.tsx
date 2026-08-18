@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import GameGrid, { type GameGridItem } from "@/components/GameGrid";
-import AdsterraNative from "@/components/AdsterraNative";
+import NativeAd from "@/components/ads/NativeAd";
 
 type InfiniteGameGridProps = {
     initialGames: GameGridItem[];
@@ -75,7 +75,7 @@ export default function InfiniteGameGrid({ initialGames, initialPage, totalPages
 
     return (
         <>
-            <GameGrid games={games} adEvery={12} renderAd={() => <AdsterraNative />} />
+            <GameGrid games={games} adEvery={12} renderAd={() => <NativeAd />} />
 
             {!done && (
                 <div ref={sentinelRef} className="flex items-center justify-center py-8">

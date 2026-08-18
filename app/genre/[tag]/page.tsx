@@ -1,5 +1,6 @@
 import { type GameGridItem } from "@/components/GameGrid";
 import InfiniteLoadGrid from "@/components/InfiniteLoadGrid";
+import ResponsiveBannerAd from "@/components/ads/ResponsiveBannerAd";
 import { fetchGamepixTag } from "@/lib/gamepix";
 import { formatCategoryLabel } from "@/lib/categories";
 import type { Metadata } from "next";
@@ -62,6 +63,10 @@ export default async function GenrePage({ params, searchParams }: GenrePageProps
     return (
         <div className="mt-12">
             <h1 className="m-4 text-2xl font-bold">{formatCategoryLabel(tag)} Games</h1>
+
+            <div className="m-4">
+                <ResponsiveBannerAd />
+            </div>
 
             {games.length > 0 ? (
                 <div className="m-4">

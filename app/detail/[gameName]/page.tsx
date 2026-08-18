@@ -3,8 +3,10 @@ import formatDate from "@/utils/formatDate";
 import formatNumber from "@/utils/formatNumber";
 import { getMergedGameDetail } from "@/lib/game-data";
 import { fetchGamepixTag } from "@/lib/gamepix";
-import AdsterraNative from "@/components/AdsterraNative";
-import AdsterraBanner from "@/components/AdsterraBanner";
+import AdSlot from "@/components/ads/AdSlot";
+import NativeAd from "@/components/ads/NativeAd";
+import BannerAd from "@/components/ads/BannerAd";
+import ResponsiveBannerAd from "@/components/ads/ResponsiveBannerAd";
 import GamePlayer from "@/components/GamePlayer";
 import GameGrid, { type GameGridItem } from "@/components/GameGrid";
 import type { Metadata } from "next";
@@ -114,7 +116,7 @@ export default async function GameDetailsPage({ params }: DetailPageProps) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(gameJsonLd) }}
             />
-            <div className="mx-auto max-w-7xl px-4 py-6 lg:py-10">
+            <div className="px-[30px] py-6 lg:py-10">
                 <div className="flex flex-wrap items-center gap-3 text-sm text-slate-300">
                     <h1 className="text-2xl font-semibold text-white">{details.title ?? gameName}</h1>
                     <span className="hidden h-4 w-px bg-slate-600 sm:block" />
@@ -124,7 +126,14 @@ export default async function GameDetailsPage({ params }: DetailPageProps) {
                     </div>
                 </div>
 
-                <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+                <div className="mt-6 flex gap-6">
+                    <aside className="sticky top-6 hidden h-fit w-40 shrink-0 xl:block">
+                        <AdSlot className="p-2" minHeightClassName="min-h-75">
+                            <BannerAd unit="banner_160x300" />
+                        </AdSlot>
+                    </aside>
+
+                    <div className="grid flex-1 gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
                     <div className="space-y-6">
                         <GamePlayer
                             title={details.title ? `${details.title} game` : "Game"}
@@ -134,9 +143,9 @@ export default async function GameDetailsPage({ params }: DetailPageProps) {
                             orientation={details.orientation}
                         />
 
-                        <div className="flex justify-center rounded-2xl bg-[#0b2044] p-5">
-                            <AdsterraNative />
-                        </div>
+                        <AdSlot minHeightClassName="min-h-30">
+                            <NativeAd />
+                        </AdSlot>
 
                         <div className="rounded-2xl bg-[#0b2044] p-5">
                             {tags.length > 0 && (
@@ -182,19 +191,24 @@ export default async function GameDetailsPage({ params }: DetailPageProps) {
                             )}
                         </div>
 
+                        <ResponsiveBannerAd />
+                    </div>
+
+                    <div className="space-y-6">
+                        <AdSlot minHeightClassName="min-h-75">
+                            <BannerAd unit="banner_160x300" />
+                        </AdSlot>
+
                         {relatedGames.length > 0 && (
                             <div className="rounded-2xl bg-[#0b2044] p-5">
                                 <h2 className="mb-4 text-sm font-semibold text-slate-200">More like this</h2>
                                 <GameGrid
                                     games={relatedGames}
-                                    className="grid grid-cols-2 gap-4 sm:grid-cols-4"
+                                    className="grid grid-cols-2 gap-4"
                                 />
                             </div>
                         )}
                     </div>
-
-                    <div className="flex justify-center lg:justify-start">
-                        <AdsterraBanner />
                     </div>
                 </div>
             </div>

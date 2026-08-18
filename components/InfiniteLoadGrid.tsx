@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import GameGrid, { type GameGridItem } from "@/components/GameGrid";
+import NativeAd from "@/components/ads/NativeAd";
 
 type LoadMoreResult = { games: GameGridItem[]; done: boolean };
 
@@ -10,6 +11,8 @@ type InfiniteLoadGridProps = {
     initialOffset: number;
     initialDone?: boolean;
     loadMore: (offset: number) => Promise<LoadMoreResult>;
+    adEvery?: number;
+    renderAd?: () => ReactNode;
 };
 
 export default function InfiniteLoadGrid({
@@ -17,6 +20,8 @@ export default function InfiniteLoadGrid({
     initialOffset,
     initialDone = false,
     loadMore,
+    adEvery = 12,
+    renderAd = () => <NativeAd />,
 }: InfiniteLoadGridProps) {
     const [games, setGames] = useState(initialGames);
     const [offset, setOffset] = useState(initialOffset);
@@ -70,7 +75,7 @@ export default function InfiniteLoadGrid({
 
     return (
         <>
-            <GameGrid games={games} />
+            <GameGrid games={games} adEvery={adEvery} renderAd={renderAd} />
 
             {!done && (
                 <div ref={sentinelRef} className="flex items-center justify-center py-8">

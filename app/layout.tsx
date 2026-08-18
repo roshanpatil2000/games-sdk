@@ -9,6 +9,8 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
 import Script from "next/script";
 import AdConsentBanner from "@/components/AdConsentBanner";
+import AnchorAd from "@/components/ads/AnchorAd";
+import { AD_UNITS } from "@/lib/ads/config";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -98,11 +100,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* adsterra Popunder ads  */}
-        <Script
-          id="adsterra-popunder"
-          src="https://deeprootedpressure.com/62/e9/cd/62e9cd0b5b4dd9e2248602658b4c2464.js"
-          strategy="afterInteractive"
-        />
+        {AD_UNITS.popunder.src && (
+          <Script id="adsterra-popunder" src={AD_UNITS.popunder.src} strategy="afterInteractive" />
+        )}
 
         <ThemeProvider
           attribute="class"
@@ -122,16 +122,13 @@ export default function RootLayout({
 
         <AdConsentBanner />
 
-
         {/* adsterra Social Bar */}
-        <Script
-          id="adsterra-social-bar"
-          src="https://deeprootedpressure.com/c3/e2/ce/c3e2cebf7030ca12429ff6abd6d898f0.js"
-          strategy="afterInteractive"
-        />
+        {AD_UNITS.social_bar.src && (
+          <Script id="adsterra-social-bar" src={AD_UNITS.social_bar.src} strategy="afterInteractive" />
+        )}
 
-
-
+        {/* adsterra Anchor / direct-link ad */}
+        <AnchorAd />
       </body>
     </html>
   );

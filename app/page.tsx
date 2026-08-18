@@ -1,5 +1,6 @@
 import Link from "next/link";
-import AdsterraNative from "@/components/AdsterraNative";
+import NativeAd from "@/components/ads/NativeAd";
+import ResponsiveBannerAd from "@/components/ads/ResponsiveBannerAd";
 import HeroBanner from "@/components/HeroBanner";
 import GameGrid, { type GameGridItem } from "@/components/GameGrid";
 import InfiniteGameGrid from "@/components/InfiniteGameGrid";
@@ -131,6 +132,10 @@ export default async function GameList({ searchParams }: PageProps) {
 
             {!isSearching && <CategoryChips />}
 
+            <div className="m-4 mt-6">
+                <ResponsiveBannerAd />
+            </div>
+
             {trendingGames.length > 0 && (
                 <div className="m-4 mt-8">
                     <div className="mb-3 flex items-center justify-between">
@@ -139,10 +144,9 @@ export default async function GameList({ searchParams }: PageProps) {
                             View More →
                         </Link>
                     </div>
-                    <GameGrid games={trendingGames} />
+                    <GameGrid games={trendingGames} adEvery={8} renderAd={() => <NativeAd />} />
                 </div>
             )}
-            <AdsterraNative />
 
             <div className="m-4 mt-8">
                 <h2 className="mb-3 text-lg font-semibold">Discover</h2>

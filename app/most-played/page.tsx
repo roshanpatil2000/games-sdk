@@ -1,4 +1,5 @@
 import InfiniteLoadGrid from "@/components/InfiniteLoadGrid";
+import ResponsiveBannerAd from "@/components/ads/ResponsiveBannerAd";
 import { getEnrichedDiscoveryGames, sortByMostPlayed } from "@/lib/trending";
 import type { Metadata } from "next";
 
@@ -38,6 +39,10 @@ export default async function MostPlayedPage({ searchParams }: MostPlayedPagePro
     return (
         <div className="mt-12">
             <h1 className="m-4 text-2xl font-bold">🔥 Most Played Games</h1>
+
+            <div className="m-4">
+                <ResponsiveBannerAd />
+            </div>
 
             {games.length > 0 ? (
                 <div className="m-4">
