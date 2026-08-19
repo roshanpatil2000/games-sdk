@@ -24,7 +24,7 @@ export default function GamePlayer({ title, src, upVotes, totalVotes, orientatio
             allowFullScreen
         />
     ) : (
-        <div className="flex h-full items-center justify-center text-sm text-slate-300">
+        <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
             Play URL unavailable for this game.
         </div>
     );
@@ -45,18 +45,18 @@ export default function GamePlayer({ title, src, upVotes, totalVotes, orientatio
     }
 
     return (
-        <div className="rounded-2xl bg-[#0b2044] shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+        <div className="rounded-2xl bg-card shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black/20">
                 {iframe}
             </div>
-            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-xs text-slate-300">
+            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-xs text-muted-foreground">
                 <span>👍 {formatNumber(upVotes)}</span>
                 <span>🗳️ {totalVotes} votes</span>
                 <span>⏱️ {orientation ?? "Not specified"}</span>
                 <button
                     type="button"
                     onClick={() => setIsFullscreen(true)}
-                    className="rounded-md border border-slate-500 px-2 py-1 text-[10px] text-slate-200 hover:bg-white/10"
+                    className="rounded-md border border-border px-2 py-1 text-[10px] text-foreground hover:bg-accent"
                 >
                     Open Full Screen
                 </button>

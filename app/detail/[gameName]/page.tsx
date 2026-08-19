@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import formatDate from "@/utils/formatDate";
 import formatNumber from "@/utils/formatNumber";
+import stripHtml from "@/utils/stripHtml";
 import { getMergedGameDetail } from "@/lib/game-data";
 import { fetchGamepixTag } from "@/lib/gamepix";
 import AdSlot from "@/components/ads/AdSlot";
@@ -41,7 +42,7 @@ export async function generateMetadata({ params }: DetailPageProps): Promise<Met
     const details = await getMergedGameDetail(gameName);
     const title = details?.title ? `${details.title} | GamePix` : `${gameName} | GamePix`;
     const description =
-        details?.description?.slice(0, 160) ||
+        (details?.description ? stripHtml(details.description) : "").slice(0, 160) ||
         `Play ${details?.title ?? gameName} online on GamePix.`;
     const image = details?.banner_image || details?.image || "/og.png";
 
@@ -90,7 +91,9 @@ export default async function GameDetailsPage({ params }: DetailPageProps) {
         "@context": "https://schema.org",
         "@type": "VideoGame",
         name: details.title ?? gameName,
-        description: details.description || `Play ${details.title ?? gameName} online on GamePix.`,
+        description: details.description
+            ? stripHtml(details.description)
+            : `Play ${details.title ?? gameName} online on GamePix.`,
         image: details.banner_image || details.image,
         genre: tags.map((tag) => tag.title).filter(Boolean),
         applicationCategory: "Game",
@@ -111,15 +114,15 @@ export default async function GameDetailsPage({ params }: DetailPageProps) {
     };
 
     return (
-        <div className="min-h-screen bg-[#08152d] text-white">
+        <div className="min-h-screen bg-background text-foreground">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(gameJsonLd) }}
             />
             <div className="px-3 py-6 sm:px-28 lg:py-10">
-                <div className="flex flex-wrap items-center gap-3 text-sm text-slate-300">
-                    <h1 className="text-2xl font-semibold text-white">{details.title ?? gameName}</h1>
-                    <span className="hidden h-4 w-px bg-slate-600 sm:block" />
+                <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                    <h1 className="text-2xl font-semibold text-foreground">{details.title ?? gameName}</h1>
+                    <span className="hidden h-4 w-px bg-border sm:block" />
                     <div className="flex items-center gap-2">
                         <span className="text-amber-400">★★★★★</span>
                         <span>{ratingLabel}</span>
@@ -147,13 +150,13 @@ export default async function GameDetailsPage({ params }: DetailPageProps) {
                             <NativeAd />
                         </AdSlot>
 
-                        <div className="rounded-2xl bg-[#0b2044] p-5">
+                        <div className="rounded-2xl bg-card p-5">
                             {tags.length > 0 && (
                                 <div className="flex flex-wrap gap-2">
                                     {tags.slice(0, 6).map((tag, index) => (
                                         <span
                                             key={tag.tagNamespace ?? `${tag.title ?? "tag"}-${index}`}
-                                            className="rounded-full bg-[#143060] px-3 py-1 text-xs font-medium text-slate-200"
+                                            className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground"
                                         >
                                             {tag.title}
                                         </span>
@@ -161,33 +164,34 @@ export default async function GameDetailsPage({ params }: DetailPageProps) {
                                 </div>
                             )}
 
-                            <div className="mt-5 grid gap-3 text-sm text-slate-200">
+                            <div className="mt-5 grid gap-3 text-sm text-foreground">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-slate-400">Rating</span>
+                                    <span className="text-muted-foreground">Rating</span>
                                     <span>{ratingLabel}</span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-slate-400">Platform</span>
+                                    <span className="text-muted-foreground">Platform</span>
                                     <span>{details.platforms ?? "Browser (Desktop & Mobile)"}</span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-slate-400">Orientation</span>
+                                    <span className="text-muted-foreground">Orientation</span>
                                     <span>{details.orientation ?? "Not specified"}</span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-slate-400">Release date</span>
+                                    <span className="text-muted-foreground">Release date</span>
                                     <span>{releaseDate}</span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-slate-400">Last update</span>
+                                    <span className="text-muted-foreground">Last update</span>
                                     <span>{updateDate}</span>
                                 </div>
                             </div>
 
                             {details.description && (
-                                <div className="mt-5 text-sm leading-6 text-slate-300">
-                                    {details.description}
-                                </div>
+                                <div
+                                    className="mt-5 text-sm leading-6 text-muted-foreground [&_h2]:mt-4 [&_h2]:mb-2 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-foreground first:[&_h2]:mt-0 [&_p]:mb-3 [&_b]:font-semibold [&_b]:text-foreground [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1"
+                                    dangerouslySetInnerHTML={{ __html: details.description }}
+                                />
                             )}
                         </div>
 
@@ -200,8 +204,8 @@ export default async function GameDetailsPage({ params }: DetailPageProps) {
                         </AdSlot>
 
                         {relatedGames.length > 0 && (
-                            <div className="rounded-2xl bg-[#0b2044] p-5">
-                                <h2 className="mb-4 text-sm font-semibold text-slate-200">More like this</h2>
+                            <div className="rounded-2xl bg-card p-5">
+                                <h2 className="mb-4 text-sm font-semibold text-foreground">More like this</h2>
                                 <GameGrid
                                     games={relatedGames}
                                     className="grid grid-cols-2 gap-4"

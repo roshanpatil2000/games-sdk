@@ -1,9 +1,11 @@
 "use client";
 import { useState } from "react";
 import { InputInputGroup } from "./Input";
+import { SurpriseMeButton } from "./SurpriseMeButton";
 import { ToggleTheme } from "./ToggleTheme";
 import { ToggleThemeMobile } from "./ToggleThemeMobile";
 import Link from "next/link";
+import { SurpriseMeButtonMobile } from "./SurpriseMeButtonMobile";
 
 export default function Navbar() {
     const [open, setOpen] = useState(false);
@@ -19,8 +21,9 @@ export default function Navbar() {
                     </span>
                 </Link>
                 {/* Desktop */}
-                <div className="hidden md:flex gap-3 lg:gap-10">
+                <div className="hidden md:flex items-center gap-3 lg:gap-10">
                     <InputInputGroup />
+                    <SurpriseMeButton />
                     <ToggleTheme />
                 </div>
 
@@ -60,6 +63,7 @@ export default function Navbar() {
                 {/* Sidebar content */}
                 <div className="flex flex-col gap-4 px-4">
                     <InputInputGroup />
+                    <SurpriseMeButtonMobile />
                     <ToggleThemeMobile />
                 </div>
             </div>

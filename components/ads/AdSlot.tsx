@@ -11,7 +11,7 @@ type AdSlotProps = {
 export default function AdSlot({ children, className = "", minHeightClassName = "" }: AdSlotProps) {
     return (
         <div
-            className={`flex items-center justify-center rounded-2xl bg-[#0b2044] ${minHeightClassName} ${className}`}
+            className={`flex items-center justify-center rounded-2xl bg-transparent ${minHeightClassName} ${className}`}
         >
             {children}
         </div>
