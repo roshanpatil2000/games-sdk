@@ -5,8 +5,7 @@ import HeroBanner from "@/components/HeroBanner";
 import GameGrid, { type GameGridItem } from "@/components/GameGrid";
 import InfiniteGameGrid from "@/components/InfiniteGameGrid";
 import CategoryChips from "@/components/CategoryChips";
-import { fetchGamepixFeed, fetchGamepixSearch } from "@/lib/gamepix";
-import { searchGamesInDb } from "@/lib/local-games";
+import { fetchGamepixFeed } from "@/lib/gamepix";
 import { getEnrichedDiscoveryGames, sortByMostPlayed } from "@/lib/trending";
 import type { Metadata } from "next";
 
@@ -15,29 +14,12 @@ type Game = GameGridItem;
 type PageProps = {
     searchParams?: Promise<{
         page?: string;
-        q?: string;
-        device?: string;
     }>;
 };
 
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
     const params = (await searchParams) ?? {};
-    const query = (params.q ?? "").trim();
     const page = Math.max(1, Number(params.page ?? "1") || 1);
-
-    if (query) {
-        const title = `Search: ${query} | GamePix`;
-        return {
-            title,
-            description: `Browse search results for "${query}" on GamePix.`,
-            robots: { index: false, follow: true },
-            openGraph: {
-                title,
-                description: `Browse search results for "${query}" on GamePix.`,
-                url: `/?q=${encodeURIComponent(query)}&device=desktop`,
-            },
-        };
-    }
 
     const title = page > 1 ? `GamePix - Page ${page}` : "GamePix";
     const description =
@@ -60,35 +42,6 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     };
 }
 
-type SearchItem = {
-    gameNamespace: string;
-    title: string;
-    tags?: string[];
-};
-
-async function fetchSearchResults(query: string, device: "desktop" | "mobile"): Promise<Game[]> {
-    const data = await fetchGamepixSearch(query, device);
-    const items = (data.items ?? []) as SearchItem[];
-
-    if (items.length === 0) {
-        console.warn(`[search] GamePix returned no results for "${query}", falling back to DB`);
-        const dbGames = await searchGamesInDb(query, 20);
-        return dbGames.map((game) => ({
-            namespace: game.namespace,
-            title: game.title,
-            category: game.category,
-            banner_image: game.bannerImage,
-        }));
-    }
-
-    return items.map((item) => ({
-        namespace: item.gameNamespace,
-        title: item.title,
-        category: item.tags?.[0] ?? null,
-        banner_image: `https://img.gamepix.com/games/${item.gameNamespace}/cover/${item.gameNamespace}.png?w=320`,
-    }));
-}
-
 async function fetchGamesPage(page: number) {
     const data = await fetchGamepixFeed(page, 48);
 
@@ -109,28 +62,21 @@ async function fetchGamesPage(page: number) {
 export default async function GameList({ searchParams }: PageProps) {
     const params = (await searchParams) ?? {};
     const page = Math.max(1, Number(params.page ?? "1") || 1);
-    const query = (params.q ?? "").trim();
-    const device = params.device === "mobile" ? "mobile" : "desktop";
-    const isSearching = query.length > 0;
+    const device = "desktop";
 
     const { items: pageItems, totalPages } = await fetchGamesPage(page);
-    const games = isSearching ? await fetchSearchResults(query, device) : pageItems;
-    const enrichedDiscoveryGames = !isSearching ? await getEnrichedDiscoveryGames(device, 18) : [];
+    const enrichedDiscoveryGames = await getEnrichedDiscoveryGames(device, 18);
     const heroGames = enrichedDiscoveryGames.slice(0, 6);
     const mostPlayed = sortByMostPlayed(enrichedDiscoveryGames);
     const trendingGames = mostPlayed.slice(0, 12);
 
     return (
         <div className={heroGames.length > 0 ? "" : "mt-12"}>
-            <h1 className="sr-only">
-                {isSearching
-                    ? `Search results for "${query}"`
-                    : "Play Free Online Games – 10,000+ Titles on GamePix"}
-            </h1>
+            <h1 className="sr-only">Play Free Online Games – 10,000+ Titles on GamePix</h1>
 
             {heroGames.length > 0 && <HeroBanner games={heroGames} />}
 
-            {!isSearching && <CategoryChips />}
+            <CategoryChips />
 
             <div className="m-4 mt-6">
                 <ResponsiveBannerAd />
@@ -150,11 +96,7 @@ export default async function GameList({ searchParams }: PageProps) {
 
             <div className="m-4 mt-8">
                 <h2 className="mb-3 text-lg font-semibold">Discover</h2>
-                {isSearching ? (
-                    <GameGrid games={games} />
-                ) : (
-                    <InfiniteGameGrid initialGames={games} initialPage={page} totalPages={totalPages} />
-                )}
+                <InfiniteGameGrid initialGames={pageItems} initialPage={page} totalPages={totalPages} />
             </div>
         </div>
     );
