@@ -8,7 +8,6 @@ import Footer from "@/components/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/next"
 import Script from "next/script";
-import AdConsentBanner from "@/components/AdConsentBanner";
 import AnchorAd from "@/components/ads/AnchorAd";
 import { AD_UNITS } from "@/lib/ads/config";
 
@@ -119,8 +118,6 @@ export default function RootLayout({
         </ThemeProvider>
         <SpeedInsights />
         <Analytics />
-
-        <AdConsentBanner />
 
         {/* adsterra Social Bar */}
         {AD_UNITS.social_bar.src && (

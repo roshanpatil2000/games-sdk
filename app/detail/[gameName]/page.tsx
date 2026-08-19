@@ -116,7 +116,7 @@ export default async function GameDetailsPage({ params }: DetailPageProps) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(gameJsonLd) }}
             />
-            <div className="px-[30px] py-6 lg:py-10">
+            <div className="px-3 py-6 sm:px-28 lg:py-10">
                 <div className="flex flex-wrap items-center gap-3 text-sm text-slate-300">
                     <h1 className="text-2xl font-semibold text-white">{details.title ?? gameName}</h1>
                     <span className="hidden h-4 w-px bg-slate-600 sm:block" />

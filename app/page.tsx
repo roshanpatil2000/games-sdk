@@ -144,7 +144,7 @@ export default async function GameList({ searchParams }: PageProps) {
                             View More →
                         </Link>
                     </div>
-                    <GameGrid games={trendingGames} adEvery={8} renderAd={() => <NativeAd />} />
+                    <GameGrid games={trendingGames} adEvery={12} renderAd={() => <NativeAd />} />
                 </div>
             )}
 
