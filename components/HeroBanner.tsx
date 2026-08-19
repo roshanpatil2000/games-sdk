@@ -102,6 +102,7 @@ export default function HeroBanner({ games }: HeroBannerProps) {
                         fetchPriority={index === 0 ? "high" : undefined}
                         sizes="100vw"
                         className="object-cover"
+                        unoptimized={!!game.banner_image}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/10 to-transparent" />

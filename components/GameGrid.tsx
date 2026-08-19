@@ -41,6 +41,7 @@ export default function GameGrid({
                             loading={index < priorityCount ? "eager" : "lazy"}
                             alt={game.title}
                             className="h-auto w-full rounded-lg object-cover"
+                            unoptimized={!!game.banner_image}
                         />
                         <div className="absolute inset-0 flex flex-col items-center justify-center rounded-lg bg-muted p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-95">
                             <p className="text-center font-semibold">{game.title}</p>
